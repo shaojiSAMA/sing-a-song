@@ -1,0 +1,15 @@
+# 唱练 · 后端直接依赖（Python 3.11/3.12，Windows x64）
+# 间接依赖（numpy / scipy / librosa / soundfile / pydub / pillow /
+# onnx2torch / rotary-embedding-torch / torchvision / audioread 等）会自动安装
+audio-separator==0.47.1
+onnxruntime==1.31.1
+torch==2.15.0
+fastapi==0.162.0
+uvicorn==0.54.0
+python-multipart==0.0.32
+pycryptodome==4.2.0
+mutagen==1.48.1
+fugashi==1.5.2
+unidic-lite==1.0.8
+cutlet==0.5.2
+jaconv==0.5.0

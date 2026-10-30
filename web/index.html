@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>唱练 · 本地练歌工作室</title>
+<link rel="stylesheet" href="css/glass.css">
+</head>
+<body>
+<div class="bg-orbs"><span></span><span></span><span></span></div>
+
+<header class="topbar glass">
+  <div class="brand" id="brand-home">🎤 唱练</div>
+  <div class="top-actions">
+    <button class="gbtn" id="nav-home">首页</button>
+    <button class="gbtn primary" id="nav-new">＋ 新建项目</button>
+  </div>
+</header>
+
+<main>
+  <!-- ============ 首页 ============ -->
+  <section id="view-home" class="view">
+    <button id="home-new-card" class="new-card glass">
+      <span class="plus">＋</span>
+      <span class="nc-title">新建项目</span>
+      <span class="nc-sub">上传 mp3 / flac / m4a / wav，或 NCM · QMC · KGM · KWM 等云音乐缓存<br>
+      自动解密、自动分离人声与伴奏、自动匹配歌词与假名注音</span>
+    </button>
+    <h2 class="section-title">最近项目</h2>
+    <div id="project-grid" class="project-grid"></div>
+    <p id="home-empty" class="empty-tip" hidden>还没有项目，点上面的卡片开始第一首歌。</p>
+  </section>
+
+  <!-- ============ 新建项目 ============ -->
+  <section id="view-new" class="view" hidden>
+    <div class="glass panel new-panel">
+      <h2>新建练唱项目</h2>
+      <label id="dropzone" class="dropzone">
+        <input type="file" id="file-input" accept="audio/*,.ncm,.qmc0,.qmc3,.qmcflac,.mflac,.mgg,.kgm,.kgma,.vpr,.kwm,.tkm,.ape,.wma" hidden>
+        <div class="dz-inner">
+          <div class="dz-icon">🎵</div>
+          <div class="dz-main">点击选择，或把歌曲拖到这里</div>
+          <div class="dz-sub">常见音频与各大平台加密缓存均可，全程本机处理</div>
+        </div>
+      </label>
+
+      <div id="ingest-info" class="ingest-info" hidden>
+        <div class="ii-row"><b id="ii-name"></b><span id="ii-kind" class="chip"></span></div>
+        <div class="ii-row dim" id="ii-tags"></div>
+      </div>
+
+      <div id="pipeline" class="pipeline" hidden>
+        <div class="pl-step" id="pl-upload">
+          <span class="pl-dot"></span><span class="pl-label">上传到本机服务</span>
+          <div class="pl-bar"><i id="bar-upload"></i></div><span class="pl-pct" id="pct-upload">0%</span>
+        </div>
+        <div class="pl-step" id="pl-sep">
+          <span class="pl-dot"></span><span class="pl-label" id="sep-label">准备分离人声 / 伴奏</span>
+          <div class="pl-bar"><i id="bar-sep"></i></div><span class="pl-pct" id="pct-sep">排队中</span>
+        </div>
+        <div class="pl-step" id="pl-lyric">
+          <span class="pl-dot"></span><span class="pl-label">匹配歌词与日语注音</span>
+          <span class="pl-status" id="lyric-status">等待中</span>
+        </div>
+        <div id="pl-error" class="pl-error" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 练习页 ============ -->
+  <section id="view-song" class="view" hidden>
+    <div class="glass panel song-head">
+      <div>
+        <button class="gbtn tiny" id="btn-back">← 首页</button>
+        <h2 id="s-title">—</h2>
+        <div class="dim" id="s-artist"></div>
+      </div>
+      <div class="stem-switch glass" id="stem-switch">
+        <button data-stem="instrumental" class="on">伴奏</button>
+        <button data-stem="vocals">人声</button>
+        <button data-stem="source">原唱</button>
+      </div>
+    </div>
+
+    <div class="glass panel practice-panel">
+      <div class="transport">
+        <button class="gbtn circle" id="btn-play">▶</button>
+        <span id="t-cur">0:00</span>
+        <input type="range" id="seek" min="0" max="1000" value="0">
+        <span id="t-dur">0:00</span>
+      </div>
+
+      <div class="control-row">
+        <div class="speed-box">
+          <span>速度</span>
+          <input type="range" id="speed" min="50" max="150" value="100" step="1">
+          <b id="speed-val">100%</b>
+          <button class="gbtn tiny" id="speed-reset">100%</button>
+          <span class="dim small">不变调</span>
+        </div>
+        <div class="loop-box">
+          <button class="gbtn" id="btn-a">设 A 点</button>
+          <button class="gbtn" id="btn-b">设 B 点</button>
+          <button class="gbtn ghost" id="btn-clear-ab">清除循环</button>
+          <span id="ab-info" class="dim small"></span>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <button class="gbtn primary" id="btn-record">● 开始录音</button>
+        <button class="gbtn" id="btn-save-inst" disabled>⬇ 保存伴奏 (MP3)</button>
+        <button class="gbtn" id="btn-save-voc" disabled>⬇ 保存录音 (MP3)</button>
+        <button class="gbtn" id="btn-save-mix" disabled>⬇ 保存伴奏＋录音 (MP3)</button>
+        <span id="rec-hint" class="dim small"></span>
+      </div>
+    </div>
+
+    <div class="glass panel lyric-wrap">
+      <div class="lyric-toolbar">
+        <span id="lyric-source" class="dim small"></span>
+        <span style="flex:1"></span>
+        <button class="gbtn tiny" id="btn-match-lyric">重新匹配歌词</button>
+        <button class="gbtn tiny" id="btn-edit-lyric">编辑歌词 / 注音</button>
+      </div>
+      <div id="lyrics" class="lyrics"><p class="dim">歌词加载中…</p></div>
+    </div>
+  </section>
+</main>
+
+<!-- 歌词编辑弹层 -->
+<div id="modal" class="modal-mask" hidden>
+  <div class="glass modal">
+    <h3>编辑歌词</h3>
+    <p class="dim small">格式：<code>[00:12.50]歌词</code>；日语注音写作 <code>漢字《かんじ》</code>，竖线后可写罗马音。</p>
+    <textarea id="lyric-editor" spellcheck="false"></textarea>
+    <div class="modal-actions">
+      <button class="gbtn ghost" id="me-cancel">取消</button>
+      <button class="gbtn" id="me-save-raw">保存并重新自动注音</button>
+      <button class="gbtn primary" id="me-save-direct">直接保存当前文本</button>
+    </div>
+  </div>
+</div>
+
+<audio id="player" preload="auto"></audio>
+<script src="vendor/lame.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/mp3enc.js"></script>
+<script src="js/home.js"></script>
+<script src="js/new.js"></script>
+<script src="js/practice.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
