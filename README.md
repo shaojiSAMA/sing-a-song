@@ -82,6 +82,12 @@ launcher.py       发行版入口（选端口、播种模型、起服务、开�
   只携带歌曲名、歌手、时长这类元数据，不携带任何音频或个人信息；
 - 不包含任何账号登录、统计 SDK 或遥测。
 
+## 许可证
+
+本项目代码以 **MIT License** 开源（见 [LICENSE](./LICENSE)）。
+注意：发行包中捆绑的 FFmpeg（GPL/LGPL 构建）、分离模型权重、lamejs（LGPL-3.0）、
+mutagen（GPL-2.0）等第三方组件遵循各自许可证，歌词版权归原权利人所有。
+
 ## 开源致谢
 
 详见 [RELEASE_NOTES.md](./RELEASE_NOTES.md) 的开源组件清单，以及
